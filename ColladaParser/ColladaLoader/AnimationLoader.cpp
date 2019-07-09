@@ -6,17 +6,17 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/07 12:00:55 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/08 17:41:34 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/08 19:21:12 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "AnimationLoader.hpp"
 #include "vendor/glm/gtc/type_ptr.hpp"
-#include "pugixml/src/pugixml.hpp"
+
 
 glm::mat4 AnimationLoader::CORRECTION = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
 
-AnimationLoader::AnimationLoader(XmlNode * animationData, XmlNode * jointHierarchy)
+AnimationLoader::AnimationLoader(pugi::xml_node animationData, pugi::xml_node jointHierarchy)
 {
     this->_animationData = animationData;
     this->_jointHierarchy = jointHierarchy;
@@ -28,8 +28,10 @@ AnimationData AnimationLoader::extractAnimation()
     std::vector<float> times = getKeyTimes();
     float duration = times.back();
     std::vector<KeyFrameData> keyFrames = initKeyFrames(times);
-    std::vector<XmlNode *> animationNodes = _animationData->getChildren("animation");
-    for (XmlNode * jointNode : animationNodes)
+    std::vector<pugi::xml_node> animationNodes;
+    for (pugi::xml_node child : _animationData.children("animation"))
+        animationNodes.push_back(child);
+    for (pugi::xml_node jointNode : animationNodes)
         loadJointTransforms(keyFrames, jointNode, rootNode);
     return (AnimationData(duration, keyFrames));
 }
@@ -37,8 +39,8 @@ AnimationData AnimationLoader::extractAnimation()
 //might want to make sure this is working correctly
 std::vector<float> AnimationLoader::getKeyTimes()
 {
-    XmlNode * timeData = _animationData->getChild("animation")->getChild("source")->getChild("float_array");
-    std::string timeStr = timeData->getData();
+    pugi::xml_node timeData = _animationData.child("animation").child("source").child("float_array");
+    std::string timeStr = timeData.child_value();
     std::vector<std::string> rawTimes;
     size_t pos = 0;
     while ((pos = timeStr.find(" ")) != std::string::npos)
@@ -60,13 +62,13 @@ std::vector<KeyFrameData> AnimationLoader::initKeyFrames(std::vector<float> time
     return (frames);
 }
 
-void AnimationLoader::loadJointTransforms(std::vector<KeyFrameData> frames, XmlNode * jointData, std::string rootNodeID)
+void AnimationLoader::loadJointTransforms(std::vector<KeyFrameData> frames, pugi::xml_node jointData, std::string rootNodeID)
 {
     std::string jointNameID = getJointName(jointData);
     std::string dataID = getDataID(jointData);
-    XmlNode * transformData = jointData->getChildWithAttributes("source", "id", dataID);
+    pugi::xml_node transformData = jointData.find_child_by_attribute("source", "id", dataID.c_str());
 
-    std::string transformDataChildStr = transformData->getChild("float_array")->getData();
+    std::string transformDataChildStr = transformData.child("float_array").child_value();
     std::vector<std::string> rawData;
     size_t pos = 0;
     while ((pos = transformDataChildStr.find(" ")) != std::string::npos)
@@ -78,16 +80,18 @@ void AnimationLoader::loadJointTransforms(std::vector<KeyFrameData> frames, XmlN
     processTransforms(jointNameID, rawData, frames, jointNameID == rootNodeID);
 }
 
-std::string AnimationLoader::getDataID(XmlNode * jointData)
+std::string AnimationLoader::getDataID(pugi::xml_node jointData)
 {
-    XmlNode * node = jointData->getChild("sampler")->getChildWithAttributes("input", "semantic", "OUTPUT");
-    return (node->getAttribute("source").substr(1));
+    pugi::xml_node node = jointData.child("sampler").find_child_by_attribute("input", "semantic", "OUTPUT");
+    pugi::xml_attribute attr = node.attribute("source");
+    std::string attrStr = attr.value();
+    return (attrStr.substr(1));
 }
 
-std::string AnimationLoader::getJointName(XmlNode * jointData)
+std::string AnimationLoader::getJointName(pugi::xml_node jointData)
 {
-    XmlNode * channelNode = jointData->getChild("channel");
-    std::string data = channelNode->getAttribute("target");
+    pugi::xml_node channelNode = jointData.child("channel");
+    std::string data = channelNode.attribute("target").value();
     size_t pos = data.find("/");
     std::string name = data.substr(0, pos);
     return (name);
@@ -110,6 +114,6 @@ void AnimationLoader::processTransforms(std::string jointName, std::vector<std::
 
 std::string AnimationLoader::findRootJointName()
 {
-    XmlNode * skeleton = _jointHierarchy->getChild("visual_scene")->getChildWithAttributes("node", "id", "Armature");
-    return skeleton->getChild("node")->getAttribute("id");
+    pugi::xml_node skeleton = _jointHierarchy.child("visual_scene").find_child_by_attribute("node", "id", "Armature");
+    return skeleton.child("node").attribute("id").value();
 }

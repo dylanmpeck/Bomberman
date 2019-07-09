@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/07 17:13:34 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/07 19:53:15 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/08 19:39:14 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 
 glm::mat4 GeometryLoader::CORRECTION = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
 
-GeometryLoader::GeometryLoader(XmlNode * geometryNode, std::vector<VertexSkinData> vertexWeights)
+GeometryLoader::GeometryLoader(pugi::xml_node geometryNode, std::vector<VertexSkinData> vertexWeights)
 {
     this->_vertexWeights = vertexWeights;
-    this->_meshData = geometryNode->getChild("geometry")->getChild("mesh");
+    this->_meshData = geometryNode.child("geometry").child("mesh");
 }
 
 MeshData GeometryLoader::extractModelData()
@@ -41,11 +41,12 @@ void GeometryLoader::readRawData()
 
 void GeometryLoader::readPositions()
 {
-    std::string positionsID = _meshData->getChild("vertices")->getChild("input")->getAttribute("source").substr(1);
-    XmlNode * positionsData = _meshData->getChildWithAttributes("source", "id", positionsID)->getChild("float_array");
-    int count = std::stoi(positionsData->getAttribute("count"));
+    std::string positionsID = _meshData.child("vertices").child("input").attribute("source").value();
+    positionsID = positionsID.substr(1);
+    pugi::xml_node positionsData = _meshData.find_child_by_attribute("source", "id", positionsID.c_str()).child("float_array");
+    int count = std::stoi(positionsData.attribute("count").value());
 
-    std::string positionsDataStr = positionsData->getData();
+    std::string positionsDataStr = positionsData.child_value();
     std::vector<std::string> posData;
     size_t pos = 0;
     while ((pos = positionsDataStr.find(" ")) != std::string::npos)
@@ -67,11 +68,12 @@ void GeometryLoader::readPositions()
 
 void GeometryLoader::readNormals()
 {
-    std::string normalsID = _meshData->getChild("polylist")->getChildWithAttributes("input", "semantic", "NORMAL")->getAttribute("source").substr(1);
-    XmlNode * normalsData = _meshData->getChildWithAttributes("source", "id", normalsID)->getChild("float_array");
-    int count = std::stoi(normalsData->getAttribute("count"));
+    std::string normalsID = _meshData.child("polylist").find_child_by_attribute("input", "semantic", "NORMAL").attribute("source").value();
+    normalsID = normalsID.substr(1);
+    pugi::xml_node normalsData = _meshData.find_child_by_attribute("source", "id", normalsID.c_str()).child("float_array");
+    int count = std::stoi(normalsData.attribute("count").value());
 
-    std::string normalsDataStr = normalsData->getData();
+    std::string normalsDataStr = normalsData.child_value();
     std::vector<std::string> normData;
     size_t pos = 0;
     while ((pos = normalsDataStr.find(" ")) != std::string::npos)
@@ -93,11 +95,12 @@ void GeometryLoader::readNormals()
 
 void GeometryLoader::readTextureCoords()
 {
-    std::string texCoordsID = _meshData->getChild("polylist")->getChildWithAttributes("input", "semantic", "TEXCOORD")->getAttribute("source").substr(1);
-    XmlNode * texCoordsData = _meshData->getChildWithAttributes("source", "id", texCoordsID)->getChild("float_array");
-    int count = std::stoi(texCoordsData->getAttribute("count"));
+    std::string texCoordsID = _meshData.child("polylist").find_child_by_attribute("input", "semantic", "TEXCOORD").attribute("source").value();
+    texCoordsID = texCoordsID.substr(1);
+    pugi::xml_node texCoordsData = _meshData.find_child_by_attribute("source", "id", texCoordsID.c_str()).child("float_array");
+    int count = std::stoi(texCoordsData.attribute("count").value());
 
-    std::string texCoordsDataStr = texCoordsData->getData();
+    std::string texCoordsDataStr = texCoordsData.child_value();
     std::vector<std::string> texData;
     size_t pos = 0;
     while ((pos = texCoordsDataStr.find(" ")) != std::string::npos)
@@ -116,10 +119,12 @@ void GeometryLoader::readTextureCoords()
 
 void GeometryLoader::assembleVertices()
 {
-    XmlNode * poly = _meshData->getChild("polylist");
-    int typeCount = poly->getChildren("input").size();
+    pugi::xml_node poly = _meshData.child("polylist");
+    int typeCount = 0;
+    for (pugi::xml_node node : poly.children("input"))
+        typeCount++;
 
-    std::string polyDataStr = poly->getChild("p")->getData();
+    std::string polyDataStr = poly.child("p").child_value();
     std::vector<std::string> indexData;
     size_t pos = 0;
     while ((pos = polyDataStr.find(" ")) != std::string::npos)

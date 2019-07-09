@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/06 15:17:42 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/08 17:41:46 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/08 19:21:29 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,26 +19,25 @@
 #include "pugixml/src/pugixml.hpp"
 
 #include "DataStructures/AnimationData.hpp"
-#include "xmlParser/XmlNode.hpp"
 #include "DataStructures/KeyFrameData.hpp"
 
 class AnimationLoader {
 
 private:
     static glm::mat4 CORRECTION;
-    XmlNode * _animationData;
-    XmlNode * _jointHierarchy;
+    pugi::xml_node _animationData;
+    pugi::xml_node _jointHierarchy;
 
 public:
-    AnimationLoader(XmlNode * animationData, XmlNode * jointHierarchy);
+    AnimationLoader(pugi::xml_node animationData, pugi::xml_node jointHierarchy);
     AnimationData extractAnimation();
 
 private:
     std::vector<float> getKeyTimes();
     std::vector<KeyFrameData> initKeyFrames(std::vector<float> times);
-    void loadJointTransforms(std::vector<KeyFrameData> frames, XmlNode * jointData, std::string rootNodeId);
-    std::string getDataID(XmlNode * jointData);
-    std::string getJointName(XmlNode * jointData);
+    void loadJointTransforms(std::vector<KeyFrameData> frames, pugi::xml_node jointData, std::string rootNodeId);
+    std::string getDataID(pugi::xml_node jointData);
+    std::string getJointName(pugi::xml_node jointData);
     void processTransforms(std::string jointName, std::vector<std::string> rawData, std::vector<KeyFrameData> & keyFrames, bool root);
     std::string findRootJointName();
 };

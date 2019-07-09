@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/07 16:51:27 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/07 19:47:25 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/08 19:45:41 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 #define GEOMETRYLOADER_HPP
 
 #include <vector>
+#include "pugixml/src/pugixml.hpp"
 #include "vendor/glm/glm.hpp"
 #include "vendor/glm/gtc/matrix_transform.hpp"
-#include "xmlParser/XmlNode.hpp"
 #include "DataStructures/VertexSkinData.hpp"
 #include "DataStructures/Vertex.hpp"
 #include "DataStructures/MeshData.hpp"
@@ -25,7 +25,7 @@ class GeometryLoader {
 
 private:
     static glm::mat4 CORRECTION;
-    XmlNode * _meshData;
+    pugi::xml_node _meshData;
     std::vector<VertexSkinData> _vertexWeights;
 
     std::vector<float> _verticesArray;
@@ -41,7 +41,7 @@ private:
     std::vector<int> _indices;
 
 public:
-    GeometryLoader(XmlNode * geometryNode, std::vector<VertexSkinData> vertexWeights);
+    GeometryLoader(pugi::xml_node geometryNode, std::vector<VertexSkinData> vertexWeights);
     MeshData extractModelData();
 
 private:

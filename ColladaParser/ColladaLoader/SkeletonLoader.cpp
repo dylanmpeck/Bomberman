@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/07 20:00:54 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/07 20:25:03 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/08 19:40:34 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,31 +15,31 @@
 
 glm::mat4 SkeletonLoader::CORRECTION = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-SkeletonLoader::SkeletonLoader(XmlNode * visualSceneNode, std::vector<std::string> boneOrder)
+SkeletonLoader::SkeletonLoader(pugi::xml_node visualSceneNode, std::vector<std::string> boneOrder)
 {
     this->_jointCount = 0;
-    this->_armatureData = visualSceneNode->getChild("visual_scene")->getChildWithAttributes("node", "id", "Armature");
+    this->_armatureData = visualSceneNode.child("visual_scene").find_child_by_attribute("node", "id", "Armature");
     this->_boneOrder = boneOrder;
 }
 
 SkeletonData SkeletonLoader::extractBoneData()
 {
-    XmlNode * headNode = _armatureData->getChild("node");
+    pugi::xml_node headNode = _armatureData.child("node");
     JointData headJoint = loadJointData(headNode, true);
     return SkeletonData(_jointCount, headJoint);
 }
 
-JointData SkeletonLoader::loadJointData(XmlNode * jointNode, bool isRoot)
+JointData SkeletonLoader::loadJointData(pugi::xml_node jointNode, bool isRoot)
 {
     JointData joint = extractMainJointData(jointNode, isRoot);
-    for (XmlNode * childNode : jointNode->getChildren("node"))
+    for (pugi::xml_node childNode : jointNode.children("node"))
         joint.addChild(loadJointData(childNode, false));
     return (joint);
 }
 
-JointData SkeletonLoader::extractMainJointData(XmlNode * jointNode, bool isRoot)
+JointData SkeletonLoader::extractMainJointData(pugi::xml_node jointNode, bool isRoot)
 {
-    std::string nameID = jointNode->getAttribute("id");
+    std::string nameID = jointNode.attribute("id").value();
     int index = 0;
     for (std::string bone : _boneOrder)
     {
@@ -48,7 +48,7 @@ JointData SkeletonLoader::extractMainJointData(XmlNode * jointNode, bool isRoot)
         index++;
     }
 
-    std::string matrixDataStr = jointNode->getChild("matrix")->getData();
+    std::string matrixDataStr = jointNode.child("matrix").child_value();
     std::vector<std::string> matrixData;
     size_t pos = 0;
     while ((pos = matrixDataStr.find(" ")) != std::string::npos)

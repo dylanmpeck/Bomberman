@@ -6,15 +6,15 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/07 20:29:46 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/07 20:50:45 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/08 19:44:05 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "SkinLoader.hpp"
 
-SkinLoader::SkinLoader(XmlNode * controllersNode, int maxWeights)
+SkinLoader::SkinLoader(pugi::xml_node controllersNode, int maxWeights)
 {
-    this->_skinningData = controllersNode->getChild("controller")->getChild("skin");
+    this->_skinningData = controllersNode.child("controller").child("skin");
     this->_maxWeights = maxWeights;
 }
 
@@ -22,7 +22,7 @@ SkinningData SkinLoader::extractSkinData()
 {
     std::vector<std::string> jointList = loadJointsList();
     std::vector<float> weights = loadWeights();
-    XmlNode * weightsDataNode = _skinningData->getChild("vertex_weights");
+    pugi::xml_node weightsDataNode = _skinningData.child("vertex_weights");
     std::vector<int> effectorJointCounts = getEffectiveJointsCounts(weightsDataNode);
     std::vector<VertexSkinData> vertexWeights = getSkinData(weightsDataNode, effectorJointCounts, weights);
     return (SkinningData(jointList, vertexWeights));
@@ -30,11 +30,12 @@ SkinningData SkinLoader::extractSkinData()
 
 std::vector<std::string> SkinLoader::loadJointsList()
 {
-    XmlNode * inputNode = _skinningData->getChild("vertex_weights");
-    std::string jointDataID = inputNode->getChildWithAttributes("input", "semantic", "JOINT")->getAttribute("source").substr(1);
-    XmlNode * jointsNode = _skinningData->getChildWithAttributes("source", "id", jointDataID)->getChild("Name_array");
+    pugi::xml_node inputNode = _skinningData.child("vertex_weights");
+    std::string jointDataID = inputNode.find_child_by_attribute("input", "semantic", "JOINT").attribute("source").value();
+    jointDataID = jointDataID.substr(1);
+    pugi::xml_node jointsNode = _skinningData.find_child_by_attribute("source", "id", jointDataID.c_str()).child("Name_array");
 
-    std::string jointsDataStr = jointsNode->getData();
+    std::string jointsDataStr = jointsNode.child_value();
     std::vector<std::string> jointsList;
     size_t pos = 0;
     while ((pos = jointsDataStr.find(" ")) != std::string::npos)
@@ -48,11 +49,12 @@ std::vector<std::string> SkinLoader::loadJointsList()
 
 std::vector<float> SkinLoader::loadWeights()
 {
-    XmlNode * inputNode = _skinningData->getChild("vertex_weights");
-    std::string weightsDataID = inputNode->getChildWithAttributes("input", "semantic", "WEIGHT")->getAttribute("source").substr(1);
-    XmlNode * weightsNode = _skinningData->getChildWithAttributes("source", "id", weightsDataID)->getChild("float_array");
+    pugi::xml_node inputNode = _skinningData.child("vertex_weights");
+    std::string weightsDataID = inputNode.find_child_by_attribute("input", "semantic", "WEIGHT").attribute("source").value();
+    weightsDataID = weightsDataID.substr(1);
+    pugi::xml_node weightsNode = _skinningData.find_child_by_attribute("source", "id", weightsDataID.c_str()).child("float_array");
     
-    std::string weightsDataStr = weightsNode->getData();
+    std::string weightsDataStr = weightsNode.child_value();
     std::vector<std::string> rawData;
     size_t pos = 0;
     while ((pos = weightsDataStr.find(" ")) != std::string::npos)
@@ -67,9 +69,9 @@ std::vector<float> SkinLoader::loadWeights()
     return (weights);
 }
 
-std::vector<int> SkinLoader::getEffectiveJointsCounts(XmlNode * weightsDataNode)
+std::vector<int> SkinLoader::getEffectiveJointsCounts(pugi::xml_node weightsDataNode)
 {
-    std::string rawDataStr = weightsDataNode->getChild("vcount")->getData();
+    std::string rawDataStr = weightsDataNode.child("vcount").child_value();
     std::vector<std::string> rawData;
     size_t pos = 0;
     while ((pos = rawDataStr.find(" ")) != std::string::npos)
@@ -84,9 +86,9 @@ std::vector<int> SkinLoader::getEffectiveJointsCounts(XmlNode * weightsDataNode)
     return (counts);
 }
 
-std::vector<VertexSkinData> SkinLoader::getSkinData(XmlNode * weightsDataNode, std::vector<int> counts, std::vector<float> weights)
+std::vector<VertexSkinData> SkinLoader::getSkinData(pugi::xml_node weightsDataNode, std::vector<int> counts, std::vector<float> weights)
 {
-    std::string rawDataStr = weightsDataNode->getChild("v")->getData();
+    std::string rawDataStr = weightsDataNode.child("v").child_value();
     std::vector<std::string> rawData;
     size_t pos = 0;
     while ((pos = rawDataStr.find(" ")) != std::string::npos)
