@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/06 17:07:12 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/07 19:35:36 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/10 16:43:36 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,11 @@ const int Vertex::NO_INDEX = -1;
 
 Vertex::~Vertex()
 {
-    if (this->_duplicateVertex != nullptr)
+    //TODO MEMORY LEAKS?
+    /*if (this->_duplicateVertex != nullptr)
         delete this->_duplicateVertex;
+    if (this->_weightsData != nullptr)
+        delete this->_weightsData;*/
 }
 
 Vertex::Vertex(Vertex const & other)
@@ -29,7 +32,7 @@ Vertex const & Vertex::operator=(Vertex const & rhs)
 {
     if (this != &rhs)
     {
-        this->_position = rhs._position;
+        this->_position = glm::vec3(rhs._position);
         this->_textureIndex = rhs._textureIndex;
         this->_normalIndex = rhs._normalIndex;
         this->_duplicateVertex = new Vertex(*rhs._duplicateVertex);
@@ -37,12 +40,12 @@ Vertex const & Vertex::operator=(Vertex const & rhs)
         this->_length = rhs._length;
         this->_tangents = rhs._tangents;
         this->_averagedTangent = rhs._averagedTangent;
-        this->_weightsData = rhs._weightsData;       
+        this->_weightsData = new VertexSkinData(*rhs._weightsData);       
     }
     return (*this);
 }
 
-Vertex::Vertex(int index, glm::vec3 position, VertexSkinData weightsData)
+Vertex::Vertex(int index, glm::vec3 position, VertexSkinData * weightsData)
 {
     this->_textureIndex = NO_INDEX;
     this->_normalIndex = NO_INDEX;
@@ -55,7 +58,7 @@ Vertex::Vertex(int index, glm::vec3 position, VertexSkinData weightsData)
     this->_length = position.length();
 }
 
-VertexSkinData Vertex::getWeightsData()
+VertexSkinData * Vertex::getWeightsData()
 {
     return (_weightsData);
 }

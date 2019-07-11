@@ -6,14 +6,14 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 20:55:46 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/06 12:24:34 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/11 15:41:34 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Animator.hpp"
 #include <math.h>
 
-Animator::Animator(AnimatedModel entity) :
+Animator::Animator(AnimatedModel * entity) :
     _entity(entity), _currentAnimation(nullptr), _animationTime(0.0f)
 {
 
@@ -31,7 +31,7 @@ void Animator::update()
         return;
     increaseAnimationTime();
     std::unordered_map<std::string, glm::mat4> currentPose = calculateCurrentAnimationPose();
-    applyPoseToJoints(currentPose, _entity.getRootJoint(), glm::mat4());
+    applyPoseToJoints(currentPose, _entity->getRootJoint(), glm::mat4(1.0f));
 }
 
 void Animator::increaseAnimationTime()
@@ -86,10 +86,10 @@ float Animator::calculateProgression(KeyFrame previousFrame, KeyFrame nextFrame)
 std::unordered_map<std::string, glm::mat4> Animator::interpolatePoses(KeyFrame previousFrame, KeyFrame nextFrame, float progression)
 {
     std::unordered_map<std::string, glm::mat4> currentPose;
-    for (std::pair<std::string, JointTransform> jointName : previousFrame.getJointKeyFrames())
+    for (std::pair<std::string, JointTransform *> jointName : previousFrame.getJointKeyFrames())
     {
-        JointTransform previousTransform = previousFrame.getJointKeyFrames().at(jointName.first);
-        JointTransform nextTransform = nextFrame.getJointKeyFrames().at(jointName.first);
+        JointTransform * previousTransform = previousFrame.getJointKeyFrames().at(jointName.first);
+        JointTransform * nextTransform = nextFrame.getJointKeyFrames().at(jointName.first);
         JointTransform currentTransform = JointTransform::interpolate(previousTransform, nextTransform, progression);
         currentPose[jointName.first] = currentTransform.getLocalTransform();
     }

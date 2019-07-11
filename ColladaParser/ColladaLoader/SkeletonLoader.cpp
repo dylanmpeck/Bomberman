@@ -6,10 +6,11 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/07 20:00:54 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/08 19:40:34 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/11 15:51:50 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <iostream>
 #include "SkeletonLoader.hpp"
 #include "vendor/glm/gtc/type_ptr.hpp"
 
@@ -56,6 +57,8 @@ JointData SkeletonLoader::extractMainJointData(pugi::xml_node jointNode, bool is
         matrixData.push_back(matrixDataStr.substr(0, pos));
         matrixDataStr.erase(0, pos + 1);
     }
+    matrixData.push_back(matrixDataStr.substr(0, pos));
+    std::cout << "matrix data: " << matrixData.back() << std::endl;
 
     glm::mat4 matrix(1.0f);
     matrix = glm::make_mat4(&convertData(matrixData)[0]);
@@ -71,6 +74,6 @@ std::vector<float> SkeletonLoader::convertData(std::vector<std::string> rawData)
 {
     std::vector<float> matrixData;
     for (unsigned int i = 0; i < rawData.size(); i++)
-        matrixData[i] = std::stof(rawData[i]);
+        matrixData.push_back(std::stof(rawData[i]));
     return (matrixData);
 }

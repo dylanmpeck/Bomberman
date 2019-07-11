@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 20:52:37 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/06 12:24:34 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/09 18:50:34 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,17 @@
 #include "Joint.hpp"
 #include "OpenGLClock.hpp"
 
+class AnimatedModel;
+
 class Animator {
 
 private:
-    AnimatedModel _entity;
+    AnimatedModel * _entity;
     Animation * _currentAnimation;
     float _animationTime;
 
 public:
-    Animator(AnimatedModel entity);
+    Animator(AnimatedModel * entity);
     void doAnimation(Animation * animation);
     void update();
 

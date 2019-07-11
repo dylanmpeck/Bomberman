@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/04 18:55:05 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/06 15:40:35 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/09 18:51:02 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 AnimatedModel::AnimatedModel(VertexArray * model, Texture * texture, Joint rootJoint, int jointCount) :
     _model(model), _texture(texture), _rootJoint(rootJoint), _jointCount(jointCount),
-    _animator(new Animator(*this))
+    _animator(new Animator(this))
 {
     _rootJoint.calcInverseBindTransform(glm::mat4(1.0f));
 }
@@ -23,14 +23,16 @@ AnimatedModel::~AnimatedModel()
 {
     if (_animator != nullptr)
         delete _animator;
+    if (_model != nullptr)
+        delete _model;
 }
 
-const VertexArray * AnimatedModel::getModel()
+VertexArray * AnimatedModel::getModel()
 {
     return (_model);
 }
 
-const Texture * AnimatedModel::getTexture()
+Texture * AnimatedModel::getTexture()
 {
     return (_texture);
 }
@@ -57,7 +59,7 @@ void AnimatedModel::update()
     _animator->update();
 }
 
-std::vector<glm::mat4> AnimatedModel::getJointTransforms()
+const std::vector<glm::mat4> AnimatedModel::getJointTransforms() const
 {
     std::vector<glm::mat4> jointMatrices;
     for (int i = 0; i < _jointCount; i++)
@@ -66,7 +68,7 @@ std::vector<glm::mat4> AnimatedModel::getJointTransforms()
     return (jointMatrices);
 }
 
-void AnimatedModel::addJointsToArray(const Joint & headJoint, std::vector<glm::mat4> & jointMatrices)
+void AnimatedModel::addJointsToArray(const Joint & headJoint, std::vector<glm::mat4> & jointMatrices) const
 {
     jointMatrices[headJoint._index] = headJoint.getAnimatedTransform();
     for (Joint childJoint : headJoint._children)

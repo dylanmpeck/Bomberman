@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/06 16:51:44 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/06 16:56:05 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/10 18:13:15 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 const int MeshData::DIMENSIONS = 3;
 
 MeshData::MeshData(std::vector<float> vertices, std::vector<float> textureCoords, std::vector<float> normals, 
-                std::vector<int> indices, std::vector<int> jointIDs, std::vector<float> vertexWeights)
+                std::vector<unsigned int> indices, std::vector<int> jointIDs, std::vector<float> vertexWeights)
 {
     this->_vertices = vertices;
     this->_textureCoords = textureCoords;
@@ -50,7 +50,7 @@ std::vector<float> MeshData::getNormals()
     return (_normals);
 }
 
-std::vector<int> MeshData::getIndices()
+std::vector<unsigned int> MeshData::getIndices()
 {
     return (_indices);
 }

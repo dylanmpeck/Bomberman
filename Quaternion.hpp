@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 20:29:25 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/05 20:50:04 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/09 18:53:59 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,9 @@ private:
     float w;
 
 public:
+    Quaternion();
     Quaternion(float x, float y, float z, float w);
+    Quaternion const & operator=(Quaternion const &);
     void normalize();
     glm::mat4 toRotationMatrix() const;
     static Quaternion fromMatrix(glm::mat4 matrix);

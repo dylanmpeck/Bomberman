@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 20:14:37 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/05 20:45:46 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/09 19:09:44 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,17 @@
 class JointTransform {
 
 private:
-    const glm::vec3 _position;
-    const Quaternion _rotation;
+    glm::vec3 _position;
+    Quaternion _rotation;
 
 public:
+    JointTransform();
     JointTransform(glm::vec3 position, Quaternion rotation);
+    ~JointTransform();
+    JointTransform(const JointTransform &);
+    JointTransform const & operator=(JointTransform const &);
     glm::mat4 getLocalTransform();
-    static JointTransform interpolate(JointTransform frameA, JointTransform frameB, float progression);
+    static JointTransform interpolate(JointTransform * frameA, JointTransform * frameB, float progression);
 
 private:
     static glm::vec3 interpolate(glm::vec3 start, glm::vec3 end, float progression);

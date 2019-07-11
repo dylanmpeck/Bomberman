@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/10 19:23:57 by dpeck             #+#    #+#             */
-/*   Updated: 2019/06/13 18:24:48 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/09 17:33:20 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "OpenGLDraw.hpp"
 #include "OpenGLInit.hpp"
 #include "OpenGLInput.hpp"
+#include "OpenGLClock.hpp"
 
 //This class connects all OpenGL functions so that only one header file will need to be included
 class OpenGLHelper {

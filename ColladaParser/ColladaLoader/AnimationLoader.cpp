@@ -6,11 +6,12 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/07 12:00:55 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/08 19:21:12 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/11 15:51:09 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "AnimationLoader.hpp"
+#include <iostream>
 #include "vendor/glm/gtc/type_ptr.hpp"
 
 
@@ -48,6 +49,8 @@ std::vector<float> AnimationLoader::getKeyTimes()
         rawTimes.push_back(timeStr.substr(0, pos));
         timeStr.erase(0, pos + 1);
     }
+    rawTimes.push_back(timeStr.substr(0, pos));
+    std::cout << "TimeStr: " << rawTimes.back() << std::endl;
     std::vector<float> times(rawTimes.size(), 0.0f);
     for (unsigned int i = 0; i < times.size(); i++)
         times[i] = stof(rawTimes[i]);
@@ -76,6 +79,8 @@ void AnimationLoader::loadJointTransforms(std::vector<KeyFrameData> frames, pugi
         rawData.push_back(transformDataChildStr.substr(0, pos));
         transformDataChildStr.erase(0, pos + 1);
     }
+    rawData.push_back(transformDataChildStr.substr(0, pos));
+    std::cout << "transformDataChildStr: " << rawData.back() << std::endl;
 
     processTransforms(jointNameID, rawData, frames, jointNameID == rootNodeID);
 }

@@ -6,12 +6,20 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 20:31:56 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/05 20:50:13 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/11 15:44:08 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Quaternion.hpp"
 #include <math.h>
+
+Quaternion::Quaternion()
+{
+    this->x = 0.0f;
+    this->y = 0.0f;
+    this->z = 0.0f;
+    this->w = 0.0f;
+}
 
 Quaternion::Quaternion(float x, float y, float z, float w)
 {
@@ -20,6 +28,18 @@ Quaternion::Quaternion(float x, float y, float z, float w)
     this->z = z;
     this->w = w;
     normalize();
+}
+
+Quaternion const & Quaternion::operator=(Quaternion const & rhs)
+{
+    if (this != &rhs)
+    {
+        this->x = rhs.x;
+        this->y = rhs.y;
+        this->z = rhs.z;
+        this->w = rhs.w;
+    }
+    return (*this);
 }
 
 void Quaternion::normalize()
@@ -33,7 +53,7 @@ void Quaternion::normalize()
 
 glm::mat4 Quaternion::toRotationMatrix() const
 {
-    glm::mat4 matrix;
+    glm::mat4 matrix(1.0f);
     const float xy = x * y;
     const float xz = x * z;
     const float xw = x * w;

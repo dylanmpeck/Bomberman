@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/06 17:00:46 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/07 19:31:36 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/10 15:37:01 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,14 @@ private:
     std::vector<glm::vec3> _tangents;
     glm::vec3 _averagedTangent;
 
-    VertexSkinData _weightsData;
+    VertexSkinData * _weightsData;
 
 public:
     ~Vertex();
     Vertex(Vertex const &);
     Vertex const & operator=(Vertex const &);
-    Vertex(int index, glm::vec3 position, VertexSkinData weightsData);
-    VertexSkinData getWeightsData();
+    Vertex(int index, glm::vec3 position, VertexSkinData * weightsData);
+    VertexSkinData * getWeightsData();
     void addTangent(glm::vec3 tangent);
     void averageTangents();
     glm::vec3 getAverageTangent();

@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/07 16:51:27 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/08 19:45:41 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/10 18:14:09 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ class GeometryLoader {
 private:
     static glm::mat4 CORRECTION;
     pugi::xml_node _meshData;
-    std::vector<VertexSkinData> _vertexWeights;
+    std::vector<VertexSkinData *> _vertexWeights;
 
     std::vector<float> _verticesArray;
     std::vector<float> _normalsArray;
@@ -35,13 +35,14 @@ private:
     std::vector<int> _jointIDsArray;
     std::vector<float> _weightsArray;
 
-    std::vector<Vertex> _vertices;
+    std::vector<Vertex *> _vertices;
     std::vector<glm::vec2> _textures;
     std::vector<glm::vec3> _normals;
-    std::vector<int> _indices;
+    std::vector<unsigned int> _indices;
 
 public:
-    GeometryLoader(pugi::xml_node geometryNode, std::vector<VertexSkinData> vertexWeights);
+    GeometryLoader(pugi::xml_node geometryNode, std::vector<VertexSkinData *> vertexWeights);
+    ~GeometryLoader();
     MeshData extractModelData();
 
 private:
@@ -50,9 +51,9 @@ private:
     void readNormals();
     void readTextureCoords();
     void assembleVertices();
-    Vertex processVertex(int posIndex, int normIndex, int texIndex);
+    Vertex * processVertex(int posIndex, int normIndex, int texIndex);
     float convertDataToArrays();
-    Vertex dealWithAlreadyProcessedVertex(Vertex * previousVertex, int newTextureIndex, int newNormalIndex);
+    Vertex * dealWithAlreadyProcessedVertex(Vertex * previousVertex, int newTextureIndex, int newNormalIndex);
     void initArrays();
     void removeUnusedVertices();
 };

@@ -6,12 +6,17 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/06 17:39:39 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/06 18:00:46 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/09 19:34:45 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "VertexSkinData.hpp"
 #include <algorithm>
+
+VertexSkinData::VertexSkinData()
+{
+    
+}
 
 void VertexSkinData::addJointEffect(int jointID, float weight)
 {
@@ -41,6 +46,15 @@ void VertexSkinData::limitJointNumber(int max)
     }
     else if (_jointIDs.size() < max)
         fillEmptyWeights(max);
+}
+
+void VertexSkinData::fillEmptyWeights(int max)
+{
+    while (_jointIDs.size() < max)
+    {
+        _jointIDs.push_back(0);
+        _weights.push_back(0.0f);
+    }
 }
 
 float VertexSkinData::saveTopWeights(std::vector<float> topWeightsVector)

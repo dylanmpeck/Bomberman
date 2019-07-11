@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 20:05:00 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/06 11:54:53 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/10 16:51:20 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,17 +31,20 @@ std::vector<KeyFrame> Animation::getKeyFrames()
 KeyFrame::KeyFrame(KeyFrame const & other) :
     _timeStamp(other._timeStamp), _pose(other._pose)
 {
-
+    *this = other;
 }
 
 KeyFrame const & KeyFrame::operator=(KeyFrame const & rhs)
 {
     if (&rhs != this)
-        return (KeyFrame(rhs));
+    {
+        this->_pose = rhs._pose;
+        this->_timeStamp = rhs._timeStamp;
+    }
     return (*this);
 }
 
-KeyFrame::KeyFrame(float timeStamp, std::map<std::string, JointTransform> jointKeyFrames) :
+KeyFrame::KeyFrame(float timeStamp, std::unordered_map<std::string, JointTransform *> jointKeyFrames) :
     _timeStamp(timeStamp), _pose(jointKeyFrames)
 {
 
@@ -52,7 +55,7 @@ float KeyFrame::getTimeStamp()
     return (_timeStamp);
 }
 
-std::map<std::string, JointTransform> KeyFrame::getJointKeyFrames()
+std::unordered_map<std::string, JointTransform *> KeyFrame::getJointKeyFrames()
 {
     return (_pose);
 }

@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/06 17:33:19 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/06 17:54:42 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/09 18:56:35 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ public:
     std::vector<int> _jointIDs;
     std::vector<float> _weights;
 
+    VertexSkinData();
     void addJointEffect(int jointID, float weight);
     void limitJointNumber(int max);
 

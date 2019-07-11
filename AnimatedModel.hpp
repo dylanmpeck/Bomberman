@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/04 18:42:14 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/06 15:40:35 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/09 18:51:44 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,21 @@
 #include "VertexArray.hpp"
 #include "Texture.hpp"
 #include "Animator.hpp"
+#include "Animation.hpp"
+#include "Joint.hpp"
 #include <vector>
 #include "vendor/glm/glm.hpp"
 #include "vendor/glm/gtc/matrix_transform.hpp"
+
+class Animator;
 
 class AnimatedModel {
 
 private:
 
     //skin
-    const VertexArray * _model;
-    const Texture * _texture;
+    VertexArray * _model;
+    Texture * _texture;
 
     //skeleton
     Joint _rootJoint;
@@ -38,16 +42,16 @@ public:
 
     AnimatedModel(VertexArray * model, Texture * texture, Joint rootJoint, int jointCount);
     ~AnimatedModel();
-    const VertexArray * getModel();
-    const Texture * getTexture();
+    VertexArray * getModel();
+    Texture * getTexture();
     Joint getRootJoint();
     void deleteOpenGL(); // shouldn't need this
     void doAnimation(Animation * animation);
     void update();
-    std::vector<glm::mat4> getJointTransforms();
+    const std::vector<glm::mat4> getJointTransforms() const;
 
 private:
-    void addJointsToArray(const Joint & headJoint, std::vector<glm::mat4> & jointMatrices);
+    void addJointsToArray(const Joint & headJoint, std::vector<glm::mat4> & jointMatrices) const;
 
 };
 

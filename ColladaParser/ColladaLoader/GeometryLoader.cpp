@@ -6,19 +6,27 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/07 17:13:34 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/08 19:39:14 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/10 19:19:14 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "GeometryLoader.hpp"
 #include <string>
+#include <iostream>
 
 glm::mat4 GeometryLoader::CORRECTION = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
 
-GeometryLoader::GeometryLoader(pugi::xml_node geometryNode, std::vector<VertexSkinData> vertexWeights)
+GeometryLoader::GeometryLoader(pugi::xml_node geometryNode, std::vector<VertexSkinData *> vertexWeights)
 {
-    this->_vertexWeights = vertexWeights;
+    for (VertexSkinData * skinData : vertexWeights)
+        this->_vertexWeights.push_back(skinData);
     this->_meshData = geometryNode.child("geometry").child("mesh");
+}
+
+GeometryLoader::~GeometryLoader()
+{
+    for (Vertex * vertex : _vertices)
+        delete vertex;
 }
 
 MeshData GeometryLoader::extractModelData()
@@ -54,6 +62,8 @@ void GeometryLoader::readPositions()
         posData.push_back(positionsDataStr.substr(0, pos));
         positionsDataStr.erase(0, pos + 1);
     }
+    posData.push_back(positionsDataStr.substr(0, pos));
+    std::cout << "Pos data: " << posData.back() << std::endl;
 
     for (int i = 0; i < count / 3; i++)
     {
@@ -62,7 +72,7 @@ void GeometryLoader::readPositions()
         float z = std::stof(posData[i * 3 + 2]);
         glm::vec4 position(x, y, z, 1.0f);
         position = CORRECTION * position; // transform matrix by vector. might need to be flipped
-        _vertices.push_back(Vertex(_vertices.size(), glm::vec3(position.x, position.y, position.z), _vertexWeights[_vertices.size()]));
+        _vertices.push_back(new Vertex(_vertices.size(), glm::vec3(position.x, position.y, position.z), _vertexWeights[_vertices.size()]));
     }
 }
 
@@ -81,6 +91,8 @@ void GeometryLoader::readNormals()
         normData.push_back(normalsDataStr.substr(0, pos));
         normalsDataStr.erase(0, pos + 1);
     }
+    normData.push_back(normalsDataStr.substr(0, pos));
+    std::cout << "Norm data: " << normData.back() << std::endl;
 
     for (int i = 0; i < count / 3; i++)
     {
@@ -108,6 +120,8 @@ void GeometryLoader::readTextureCoords()
         texData.push_back(texCoordsDataStr.substr(0, pos));
         texCoordsDataStr.erase(0, pos + 1);
     }
+    texData.push_back(texCoordsDataStr.substr(0, pos));
+    std::cout << "Tex data: " << texData.back() << std::endl;
 
     for (int i = 0; i < count / 2; i++)
     {
@@ -132,6 +146,8 @@ void GeometryLoader::assembleVertices()
         indexData.push_back(polyDataStr.substr(0, pos));
         polyDataStr.erase(0, pos + 1);
     }
+    indexData.push_back(polyDataStr.substr(0, pos));
+    std::cout << "Index data: " << indexData.back() << std::endl;
 
     for (unsigned int i = 0; i < indexData.size() / typeCount; i++)
     {
@@ -142,15 +158,15 @@ void GeometryLoader::assembleVertices()
     }
 }
 
-Vertex GeometryLoader::processVertex(int posIndex, int normIndex, int texIndex)
+Vertex * GeometryLoader::processVertex(int posIndex, int normIndex, int texIndex)
 {
-    Vertex * currentVertex = &_vertices[posIndex];
+    Vertex * currentVertex = _vertices[posIndex];
     if (!currentVertex->isSet())
     {
         currentVertex->setTextureIndex(texIndex);
         currentVertex->setNormalIndex(normIndex);
         _indices.push_back(posIndex);
-        return (*currentVertex);
+        return (currentVertex);
     }
     return (dealWithAlreadyProcessedVertex(currentVertex, texIndex, normIndex));
 }
@@ -160,12 +176,12 @@ float GeometryLoader::convertDataToArrays()
     float furtherstPoint = 0.0;
     for (unsigned int i = 0; i< _vertices.size(); i++)
     {
-        Vertex currentVertex = _vertices[i];
-        if (currentVertex.getLength() > furtherstPoint)
-            furtherstPoint = currentVertex.getLength();
-        glm::vec3 position = currentVertex.getPosition();
-        glm::vec2 textureCoord = _textures[currentVertex.getTextureIndex()];
-        glm::vec3 normalVector = _normals[currentVertex.getNormalIndex()];
+        Vertex * currentVertex = _vertices[i];
+        if (currentVertex->getLength() > furtherstPoint)
+            furtherstPoint = currentVertex->getLength();
+        glm::vec3 position = currentVertex->getPosition();
+        glm::vec2 textureCoord = _textures[currentVertex->getTextureIndex()];
+        glm::vec3 normalVector = _normals[currentVertex->getNormalIndex()];
         _verticesArray[i * 3] = position.x;
         _verticesArray[i * 3 + 1] = position.y;
         _verticesArray[i * 3 + 2] = position.z;
@@ -174,24 +190,24 @@ float GeometryLoader::convertDataToArrays()
         _normalsArray[i * 3] = normalVector.x;
         _normalsArray[i * 3 + 1] = normalVector.y;
         _normalsArray[i * 3 + 2] = normalVector.z;
-        VertexSkinData weights = currentVertex.getWeightsData();
-        _jointIDsArray[i * 3] = weights._jointIDs[0];
-        _jointIDsArray[i * 3 + 1] = weights._jointIDs[1];
-        _jointIDsArray[i * 3 + 2] = weights._jointIDs[2];
-        _weightsArray[i * 3] = weights._weights[0];
-        _weightsArray[i * 3 + 1] = weights._weights[1];
-        _weightsArray[i * 3 + 2] = weights._weights[2];
+        VertexSkinData * weights = currentVertex->getWeightsData();
+        _jointIDsArray[i * 3] = weights->_jointIDs[0];
+        _jointIDsArray[i * 3 + 1] = weights->_jointIDs[1];
+        _jointIDsArray[i * 3 + 2] = weights->_jointIDs[2];
+        _weightsArray[i * 3] = weights->_weights[0];
+        _weightsArray[i * 3 + 1] = weights->_weights[1];
+        _weightsArray[i * 3 + 2] = weights->_weights[2];
     }
     return (furtherstPoint);
 }
 
 
-Vertex GeometryLoader::dealWithAlreadyProcessedVertex(Vertex * previousVertex, int newTextureIndex, int newNormalIndex)
+Vertex * GeometryLoader::dealWithAlreadyProcessedVertex(Vertex * previousVertex, int newTextureIndex, int newNormalIndex)
 {
     if (previousVertex->hasSameTextureAndNormal(newTextureIndex, newNormalIndex))
     {
         _indices.push_back(previousVertex->getIndex());
-        return (*previousVertex);
+        return (previousVertex);
     }
     Vertex * anotherVertex = previousVertex->getDuplicateVertex();
     if (anotherVertex != nullptr)
@@ -200,9 +216,9 @@ Vertex GeometryLoader::dealWithAlreadyProcessedVertex(Vertex * previousVertex, i
     duplicateVertex->setTextureIndex(newTextureIndex);
     duplicateVertex->setNormalIndex(newNormalIndex);
     previousVertex->setDuplicateVertex(duplicateVertex);
-    _vertices.push_back(*duplicateVertex);
+    _vertices.push_back(duplicateVertex);
     _indices.push_back(duplicateVertex->getIndex());
-    return (*duplicateVertex);    
+    return (duplicateVertex);
 }
 
 void GeometryLoader::initArrays()
@@ -217,13 +233,13 @@ void GeometryLoader::initArrays()
 //Vertex might need to be a pointer here.
 void GeometryLoader::removeUnusedVertices()
 {
-    for (Vertex vertex : _vertices)
+    for (Vertex * vertex : _vertices)
     {
-        vertex.averageTangents();
-        if (!vertex.isSet())
+        vertex->averageTangents();
+        if (!vertex->isSet())
         {
-            vertex.setTextureIndex(0);
-            vertex.setNormalIndex(0);
+            vertex->setTextureIndex(0);
+            vertex->setNormalIndex(0);
         }
     }
 }
