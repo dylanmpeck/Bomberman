@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/07 20:00:54 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/11 15:51:50 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/11 19:58:23 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ SkeletonLoader::SkeletonLoader(pugi::xml_node visualSceneNode, std::vector<std::
 {
     this->_jointCount = 0;
     this->_armatureData = visualSceneNode.child("visual_scene").find_child_by_attribute("node", "id", "Armature");
-    this->_boneOrder = boneOrder;
+    for (std::string bone : boneOrder)
+        this->_boneOrder.push_back(bone);
 }
 
 SkeletonData SkeletonLoader::extractBoneData()
@@ -73,7 +74,7 @@ JointData SkeletonLoader::extractMainJointData(pugi::xml_node jointNode, bool is
 std::vector<float> SkeletonLoader::convertData(std::vector<std::string> rawData)
 {
     std::vector<float> matrixData;
-    for (unsigned int i = 0; i < rawData.size(); i++)
+    for (unsigned int i = 0; i < 16; i++)
         matrixData.push_back(std::stof(rawData[i]));
     return (matrixData);
 }

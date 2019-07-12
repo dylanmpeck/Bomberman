@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 19:47:19 by dpeck             #+#    #+#             */
-/*   Updated: 2019/06/13 19:00:28 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/11 18:44:22 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,17 @@
 
 #include "Texture.hpp"
 #include "Shader.hpp"
+#include "Camera.hpp"
+
+#include "vendor/glm/glm.hpp"
+#include "vendor/glm/gtc/matrix_transform.hpp"
 
 class ResourceManager {
 
 public:
     static std::map<std::string, Shader> _shaders;
     static std::map<std::string, Texture> _textures;
+    static std::map<std::string, Camera> _cameras;
     //static std::map<std::string, IndexBuffer> _indexBuffers;
     //static std::map<std::string, VertexArray> _vertexArrays;
 
@@ -33,6 +38,8 @@ public:
     static Shader & getShader(const std::string & name);
     static Texture & loadTexture(const std::string & filePath, GLboolean alpha, GLboolean repeat,  const std::string & name);
     static Texture & getTexture(const std::string & name);
+    static Camera & loadCamera(const std::string & name, glm::vec3 pos);
+    static Camera & getCamera(const std::string & name);
     //static IndexBuffer & loadIndexBuffer(const std::string & name);
     //static IndexBuffer & getIndexBuffer(const std::string & name);
     //static VertexArray & loadVertexArray(const std::string & name, unsigned int size);

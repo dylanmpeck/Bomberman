@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/10 15:23:40 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/10 19:54:45 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/11 19:01:49 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,13 +90,15 @@ std::vector<unsigned int> & OpenGLDraw::getBufferFormat(unsigned int slot)
 
 void OpenGLDraw::render(AnimatedModel * entity)
 {
-    entity->getTexture()->bind();
     std::vector<unsigned int> numOfAttribs(5, 1);
     entity->getModel()->bind(numOfAttribs);
+    entity->getTexture()->bind();
     entity->getModel()->getIndexBuffer()->bind();
     Shader * shader = &ResourceManager::getShader("animatedModelShader");
     shader->bind();
     shader->setUniform1i("u_diffuseMap", 0);
+    Camera * camera = &ResourceManager::getCamera("main");
+    shader->setUniformMat4f("u_view", camera->getViewMatrix());   
     unsigned int i = 0;
     for (glm::mat4 jointTransform : entity->getJointTransforms())
     {
@@ -106,5 +108,6 @@ void OpenGLDraw::render(AnimatedModel * entity)
         i++;
     }
     GLCall(glDrawElements(GL_TRIANGLES, entity->getModel()->getIndexCount(), GL_UNSIGNED_INT, 0));
-    entity->getModel()->unbind(numOfAttribs);
+    //glDrawArrays(GL_TRIANGLES, 0, entity->getModel()->getVerticesCount());
+    //entity->getModel()->unbind(numOfAttribs);
 }

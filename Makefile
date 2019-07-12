@@ -47,8 +47,9 @@ INCLUDES = 	-I /nfs/2018/d/dpeck/bomberman/include\
            	-I /nfs/2018/d/dpeck/bomberman/ColladaParser\
 		   	-I/nfs/2018/d/dpeck/.brew/Cellar/glfw/3.3/include
 LIB = -L/nfs/2018/d/dpeck/.brew/Cellar/glfw/3.3/lib \
-	  -L/nfs/2018/d/dpeck/.brew/Cellar/freetype/2.9.1/lib
-DEPEND = -lfreetype -lfreetype.6 -lglfw -framework CoreVideo -framework OpenGL -framework IOKit -framework Cocoa -framework Carbon
+	  -L/nfs/2018/d/dpeck/.brew/Cellar/freetype/2.9.1/lib\
+	  -L/nfs/2018/d/dpeck/.brew/Cellar/assimp/4.1.0/lib
+DEPEND = -lassimp.4.1.0 -lIrrXML -lfreetype -lfreetype.6 -lglfw -framework CoreVideo -framework OpenGL -framework IOKit -framework Cocoa -framework Carbon
 
 
 all: $(NAME)

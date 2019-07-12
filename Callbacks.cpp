@@ -6,12 +6,13 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/06 19:24:03 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/09 19:27:54 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/11 18:43:39 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Callbacks.hpp"
 #include <exception>
+#include "ResourceManager.hpp"
 
 bool Callback::_keys[1024] = {false};
 
@@ -36,6 +37,12 @@ void Callback::keyCallback(GLFWwindow * window, int key, int scancode, int actio
             _keys[key] = false;
     }
     return;    
+}
+
+void Callback::mouseCallback(GLFWwindow * window, double xpos, double ypos)
+{
+    Camera * camera = &ResourceManager::getCamera("main");
+    camera->processMouseMovement(xpos, ypos);
 }
 
 //SINGLETON CLASS::SHOULD NEVER BE CREATED, COPIED, OR ASSIGNED

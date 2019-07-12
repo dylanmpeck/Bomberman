@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/09 14:15:48 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/11 15:48:03 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/11 18:57:33 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,11 @@ VertexArray * AnimatedModelLoader::createVAO(MeshData data)
 {
     VertexArray * vao = new VertexArray();
     vao->bind();
+    vao->createIndexBuffer(data.getIndices());
     vao->createAttribute(0, data.getVertices(), 3);
     vao->createAttribute(1, data.getTextureCoords(), 2);
     vao->createAttribute(2, data.getNormals(), 3);
     vao->createIntAttribute(3, data.getJointIDs(), 3);
     vao->createAttribute(4, data.getVertexWeights(), 3);
-    vao->createIndexBuffer(data.getIndices());
     return (vao);
 }

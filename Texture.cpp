@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/26 18:44:29 by dpeck             #+#    #+#             */
-/*   Updated: 2019/05/31 17:43:47 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/11 17:02:24 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,20 +19,27 @@ Texture::Texture() : _rendererID(-1), _width(0), _height(0), _BPP(0)
     return;
 }
 
+//TODO make this more modular
+//also figure out anisotropic filtering and antialiasing
 Texture::Texture(int width, int height, unsigned char *image, GLint internalFormat, GLboolean repeat) : _rendererID(0), _width(width), _height(height)
 {
     GLCall(glGenTextures(1, &_rendererID));
-    //might need to be 2D
     GLCall(glBindTexture(GL_TEXTURE_2D, _rendererID));
+    GLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
 
-    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+    GLCall(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, image));
+
+    GLCall(glGenerateMipmap(GL_TEXTURE_2D));
+
+    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
     GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+    //GLCall(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0));
     GLint param = (repeat) ? GL_REPEAT : GL_CLAMP_TO_EDGE;
     GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, param));
     GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, param));
 
 
-    GLCall(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image));
+    
     GLCall(glBindTexture(GL_TEXTURE_2D, 0));
     //consider adding glGenerateMipmap if textures don't look good
 }

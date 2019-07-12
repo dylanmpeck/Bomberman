@@ -33,7 +33,7 @@ void main()
         totalNormal += worldNormal * in_weights[i];
     }
 
-    gl_Position = u_projection * u_view * u_model * totalLocalPos;
+    gl_Position = u_projection * u_view * totalLocalPos;
     pass_normal = totalNormal.xyz;
     pass_textureCoords = in_textureCoords;
 }
@@ -55,6 +55,6 @@ void main()
 {
     vec4 diffuseColor = texture(u_diffuseMap, pass_textureCoords);
     vec3 unitNormal = normalize(pass_normal);
-    float diffuseLight = max(dot(-u_lightDirection, unitNormal), 0.0f) * lightBias.x + lightBias.y;
+    float diffuseLight = max(dot(-u_lightDirection, unitNormal), 0.0) * lightBias.x + lightBias.y;
     out_color = diffuseColor * diffuseLight;
 }

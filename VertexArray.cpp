@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/26 15:26:01 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/10 19:47:09 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/11 17:58:56 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,10 @@ VertexArray const & VertexArray::operator=(VertexArray const & rhs)
     if (this != &rhs)
     {
         this->_rendererID = rhs._rendererID;
+        this->_dataVBOs = rhs._dataVBOs;
+        this->_indexBuffer = rhs._indexBuffer;
+        this->_indexCount = rhs._indexCount;
+        this->_verticesCount = rhs._verticesCount;
     }
     return (*this);
 }
@@ -53,9 +57,11 @@ void VertexArray::createAttribute(int attribute, std::vector<float> data, int at
 {
     //VertexBuffer vbo(&data[0], data.size() * sizeof(float), GL_STATIC_DRAW);
     _dataVBOs.push_back(new VertexBuffer(&data[0], data.size() * sizeof(float), GL_STATIC_DRAW));
+    GLCall(glEnableVertexAttribArray(attribute));
     _dataVBOs.back()->bind();
     GLCall(glVertexAttribPointer(attribute, attrSize, GL_FLOAT, false, attrSize * sizeof(GLfloat), 0));
     _dataVBOs.back()->unbind();
+    _verticesCount += data.size();
     //_dataVBOs.push_back(vbo);
 }
 
@@ -63,9 +69,11 @@ void VertexArray::createIntAttribute(int attribute, std::vector<int> data, int a
 {
     //VertexBuffer vbo(&data[0], data.size() * sizeof(float), GL_STATIC_DRAW);
     _dataVBOs.push_back(new VertexBuffer(&data[0], data.size() * sizeof(int), GL_STATIC_DRAW));
+    GLCall(glEnableVertexAttribArray(attribute));
     _dataVBOs.back()->bind();
     GLCall(glVertexAttribIPointer(attribute, attrSize, GL_INT, attrSize * sizeof(GLint), 0));
     _dataVBOs.back()->unbind();
+    _verticesCount += data.size();
     //_dataVBOs.push_back(vbo);    
 }
 
@@ -98,7 +106,10 @@ void VertexArray::bind(std::vector<unsigned int> attributes)
 {
     bind();
     for (unsigned int i = 0; i < attributes.size(); i++)
+    {
         glEnableVertexAttribArray(i);
+        _dataVBOs[i]->bind();
+    }
 }
 
 void VertexArray::unbind() const

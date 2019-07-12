@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/10 19:03:11 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/11 16:08:31 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/11 19:20:26 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,9 @@ bool OpenGLInit::createWindow()
 	glfwSetFramebufferSizeCallback(window, Callback::framebufferSizeCallback);
 	glfwSwapInterval(1); //synchronize with vsync
 	glfwSetKeyCallback(window, Callback::keyCallback);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	ResourceManager::loadCamera("main", glm::vec3(0.0f, 0.0f, 2.5f));
+	glfwSetCursorPosCallback(window, Callback::mouseCallback);
 
 	//loads the address of OpenGL function pointers which are OS-specific
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -93,20 +96,20 @@ void OpenGLInit::clearResources()
 bool OpenGLInit::buildShaders()
 {
 	Shader *shader;
-    Camera camera(glm::vec3(0.0f, 0.0f, 2.5f));
+    Camera camera(glm::vec3(0.0f, 0.0f, 5.5f));
     
     //Animated Model shader
     shader = &ResourceManager::loadShader("./shaders/animatedModel.shader", "animatedModelShader");
 	glm::mat4 model(1.0f);
 	//model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 	glm::mat4 view = camera.getViewMatrix();
-	view = glm::rotate(view, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	//view = glm::rotate(view, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)(WINWIDTH)/(float)(WINHEIGHT), 0.1f, 100.0f);
 	//glm::mat4 proj = glm::ortho(0.0f, static_cast<float>(WINWIDTH), static_cast<float>(WINHEIGHT), 0.0f, 0.1f, 10.0f);
     if (shader != nullptr)
     {
         shader->bind();
-		shader->setUniformMat4f("u_model", model);
+		//shader->setUniformMat4f("u_model", model);
         shader->setUniformMat4f("u_projection", proj);
 		shader->setUniformMat4f("u_view", view);
 		shader->setUniform3f("u_lightDirection", 0.2f, -0.3f, -0.8f); // TODO might want to do something fancier with lighting

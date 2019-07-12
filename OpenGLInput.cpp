@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/10 19:17:15 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/09 17:31:04 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/11 18:31:06 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,3 +59,4 @@ void OpenGLInput::gameInput(Direction & curDirection)
     /* if (Callback::_keys[GLFW_KEY_ESCAPE])
         curDirection = Pause;*/
 }
+

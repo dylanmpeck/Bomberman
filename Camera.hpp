@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 17:00:48 by dpeck             #+#    #+#             */
-/*   Updated: 2019/06/13 17:01:32 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/05/29 17:37:46 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,27 @@
 #include "vendor/glm/glm.hpp"
 #include "vendor/glm/gtc/matrix_transform.hpp"
 
+enum CameraMovement {
+    FORWARD,
+    BACKWARD,
+    LEFT,
+    RIGHT
+};
+
+struct Mouse {
+    bool firstMouse;
+    float lastX;
+    float lastY;
+};
+
+const float YAW = -90.0f;
+const float PITCH = 0.0f;
+const float SPEED = 2.5f;
+const float SENSITIVITY = 0.1f;
+const float ZOOM = 45.0f;
+const float XCENTER = 800.0f / 2.0f;
+const float YCENTER = 600.0f / 2.0f;
+
 class Camera {
 
 public:
@@ -25,18 +46,26 @@ public:
     glm::vec3 _up;
     glm::vec3 _right;
     glm::vec3 _worldUp;
-    glm::vec3 _target;
+    float _yaw;
+    float _pitch;
+    float _movementSpeed;
+    float _mouseSensitivity;
+    float _zoom;
+    Mouse mouse;
 
     //construct with vectors
-    Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f));
-    ~Camera();
-    Camera(Camera const &);
-    Camera const & operator=(Camera const &);
+    Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
+    //construct with individual scalar values
+    Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
 
     glm::mat4 getViewMatrix();
+    void processKeyboard(CameraMovement direction, float deltaTime);
+    void processMouseMovement(float xpos, float ypos, GLboolean constrainPitch = true);
+    void processMouseScroll(float yoffset);
 
 private:
-    Camera();
+    void updateCameraVectors();
+
 };
 
 #endif

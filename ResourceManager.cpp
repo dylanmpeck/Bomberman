@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 19:59:37 by dpeck             #+#    #+#             */
-/*   Updated: 2019/06/13 19:01:38 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/11 18:40:48 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 std::map<std::string, Texture> ResourceManager::_textures;
 std::map<std::string, Shader> ResourceManager::_shaders;
+std::map<std::string, Camera> ResourceManager::_cameras;
 //std::map<std::string, IndexBuffer> ResourceManager::_indexBuffers;
 //std::map<std::string, VertexArray> ResourceManager::_vertexArrays;
 
@@ -108,6 +109,19 @@ Texture & ResourceManager::getTexture(const std::string & name)
 	if (_textures.find(name) != _textures.end())
 		return (_textures[name]);
     return (getTexture("triangle"));
+}
+
+Camera & ResourceManager::loadCamera(const std::string & name, glm::vec3 pos)
+{
+	_cameras[name] = Camera(pos);
+	return (_cameras[name]);
+}
+
+Camera & ResourceManager::getCamera(const std::string & name)
+{
+	if (_cameras.find(name) != _cameras.end())
+		return (_cameras[name]);
+	return (_cameras["null"]);
 }
 
 /*IndexBuffer & ResourceManager::loadIndexBuffer(const std::string & name)

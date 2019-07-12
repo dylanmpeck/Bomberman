@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/07 17:13:34 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/10 19:19:14 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/11 19:54:02 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,7 +174,7 @@ Vertex * GeometryLoader::processVertex(int posIndex, int normIndex, int texIndex
 float GeometryLoader::convertDataToArrays()
 {
     float furtherstPoint = 0.0;
-    for (unsigned int i = 0; i< _vertices.size(); i++)
+    for (unsigned int i = 0; i < _vertices.size(); i++)
     {
         Vertex * currentVertex = _vertices[i];
         if (currentVertex->getLength() > furtherstPoint)
@@ -226,7 +226,7 @@ void GeometryLoader::initArrays()
     this->_verticesArray = std::vector<float>(_vertices.size() * 3, 0.0f);
     this->_texturesArray = std::vector<float>(_vertices.size() * 2, 0.0f);
     this->_normalsArray = std::vector<float>(_vertices.size() * 3, 0.0f);
-    this->_jointIDsArray = std::vector<int>(_vertices.size() * 3, 0.0f);
+    this->_jointIDsArray = std::vector<int>(_vertices.size() * 3, 0);
     this->_weightsArray = std::vector<float>(_vertices.size() * 3, 0.0f);
 }
 
