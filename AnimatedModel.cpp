@@ -6,13 +6,13 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/04 18:55:05 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/09 18:51:02 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/12 17:41:58 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "AnimatedModel.hpp"
 
-AnimatedModel::AnimatedModel(VertexArray * model, Texture * texture, Joint rootJoint, int jointCount) :
+AnimatedModel::AnimatedModel(VertexArray * model, TextureLoader * texture, Joint rootJoint, int jointCount) :
     _model(model), _texture(texture), _rootJoint(rootJoint), _jointCount(jointCount),
     _animator(new Animator(this))
 {
@@ -32,7 +32,7 @@ VertexArray * AnimatedModel::getModel()
     return (_model);
 }
 
-Texture * AnimatedModel::getTexture()
+TextureLoader * AnimatedModel::getTexture()
 {
     return (_texture);
 }

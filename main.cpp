@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/09 17:32:39 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/11 18:47:31 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/12 18:05:25 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include "eDirection.hpp"
 #include "AnimatedModelLoader.hpp"
 #include "AnimationLoader.hpp"
+#include "ResourceManager.hpp"
+#include "ModelImporting/Model.hpp"
 
 int main()
 {
@@ -21,11 +23,13 @@ int main()
     bool quit = false;
     Direction curDirection = None;
 
-    AnimatedModel * entity = AnimatedModelLoader::loadEntity("./resources/model.dae", "./resources/diffuse.png");
-    Animation anim = AnimationLoader::loadAnimation("resources/model.dae");
+    //AnimatedModel * entity = AnimatedModelLoader::loadEntity("./resources/model.dae", "./resources/diffuse.png");
+    //Animation anim = AnimationLoader::loadAnimation("resources/model.dae");
     //entity->doAnimation(&anim);
 
+    Shader * shader = &ResourceManager::getShader("modelLoadingShader");
 
+    Model model("resources/nanosuit/nanosuit.obj");
 
 
     while (quit == false)
@@ -36,14 +40,18 @@ int main()
 
         if (curDirection == Exit)
             quit = true;
+
+        shader->bind();
+
+        model.draw(shader);
         
         //entity->update();
 
-        OpenGLDraw::render(entity);
+        //OpenGLDraw::render(entity);
 
         OpenGLDraw::swapBuffers();
     }
-    delete entity;
+    //delete entity;
     OpenGLHelper::cleanup();
     return (0);
 }

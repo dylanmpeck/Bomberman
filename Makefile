@@ -1,30 +1,12 @@
 NAME = test
-SOURCE = AnimatedModel.cpp\
-		 AnimatedModelLoader.cpp \
-		 Animation.cpp \
-		 AnimationLoader.cpp \
-		 ColladaParser/ColladaLoader/AnimationLoader.cpp \
-		 ColladaParser/ColladaLoader/ColladaLoader.cpp \
-		 ColladaParser/ColladaLoader/GeometryLoader.cpp \
-		 ColladaParser/ColladaLoader/SkeletonLoader.cpp \
-		 ColladaParser/ColladaLoader/SkinLoader.cpp \
-		 ColladaParser/DataStructures/AnimatedModelData.cpp \
-		 ColladaParser/DataStructures/AnimationData.cpp \
-		 ColladaParser/DataStructures/JointData.cpp \
-		 ColladaParser/DataStructures/JointTransformData.cpp \
-		 ColladaParser/DataStructures/KeyFrameData.cpp \
-		 ColladaParser/DataStructures/MeshData.cpp \
-		 ColladaParser/DataStructures/SkeletonData.cpp \
-		 ColladaParser/DataStructures/SkinningData.cpp \
-		 ColladaParser/DataStructures/Vertex.cpp \
-		 ColladaParser/DataStructures/VertexSkinData.cpp \
-		 Animator.cpp \
-		 Callbacks.cpp \
+SOURCE = Callbacks.cpp \
 		 Camera.cpp \
 		 GLDebug.cpp \
 		 IndexBuffer.cpp \
 		 Joint.cpp \
 		 JointTransform.cpp \
+		 ModelImporting/Mesh.cpp \
+		 ModelImporting/Model.cpp \
 		 OpenGLClock.cpp \
 		 OpenGLDraw.cpp \
 		 OpenGLHelper.cpp \
@@ -34,7 +16,7 @@ SOURCE = AnimatedModel.cpp\
 		 ResourceManager.cpp \
 		 Shader.cpp \
 		 TextRenderer.cpp \
-		 Texture.cpp \
+		 TextureLoader.cpp \
 		 VertexArray.cpp \
 		 VertexBuffer.cpp \
 		 glad.cpp \
@@ -55,7 +37,7 @@ DEPEND = -lassimp.4.1.0 -lIrrXML -lfreetype -lfreetype.6 -lglfw -framework CoreV
 all: $(NAME)
 
 $(NAME):
-	g++ -std=c++11 -stdlib=libc++ $(INCLUDES) $(LIB) $(DEPEND) $(SOURCE)
+	g++ -g -fsanitize=address -fno-omit-frame-pointer -std=c++11 -stdlib=libc++ $(INCLUDES) $(LIB) $(DEPEND) $(SOURCE)
 
 clean:
 	/bin/rm -f *.o

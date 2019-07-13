@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/09 14:15:48 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/11 18:57:33 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/12 17:41:58 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ AnimatedModel * AnimatedModelLoader::loadEntity(std::string modelFile, std::stri
    // std::cout << "1" << std::endl;
     VertexArray * model = createVAO(entityData.getMeshData());
     //std::cout << "2" << std::endl;
-    Texture * texture = &ResourceManager::loadTexture(textureFile, GL_TRUE, GL_FALSE, "animatedModel");
+    TextureLoader * texture = &ResourceManager::loadTexture(textureFile, "animatedModel");
     //std::cout << "3" << std::endl;
     SkeletonData skeletonData = entityData.getJointsData();
     //std::cout << "4" << std::endl;

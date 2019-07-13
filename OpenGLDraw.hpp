@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/10 14:43:55 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/10 19:43:14 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/12 17:44:54 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 #include "GLFW/glfw3.h"
 
 #include "TextRenderer.hpp"
-#include "AnimatedModel.hpp"
 #include <vector>
 #include <unordered_map>
 
@@ -39,7 +38,7 @@ public:
     static void clearScreen();
     static void swapBuffers();
 
-    static void render(AnimatedModel * entity);
+    //static void render(AnimatedModel * entity);
 
     static VertexBufferLayout & getBufferLayout(unsigned int slot);
     static std::vector<unsigned int> & getBufferFormat(unsigned int slot);

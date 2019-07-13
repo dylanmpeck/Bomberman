@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/04 18:42:14 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/09 18:51:44 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/12 17:41:58 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #define ANIMATEDMODEL_HPP
 
 #include "VertexArray.hpp"
-#include "Texture.hpp"
+#include "TextureLoader.hpp"
 #include "Animator.hpp"
 #include "Animation.hpp"
 #include "Joint.hpp"
@@ -30,7 +30,7 @@ private:
 
     //skin
     VertexArray * _model;
-    Texture * _texture;
+    TextureLoader * _texture;
 
     //skeleton
     Joint _rootJoint;
@@ -40,10 +40,10 @@ private:
 
 public:
 
-    AnimatedModel(VertexArray * model, Texture * texture, Joint rootJoint, int jointCount);
+    AnimatedModel(VertexArray * model, TextureLoader * texture, Joint rootJoint, int jointCount);
     ~AnimatedModel();
     VertexArray * getModel();
-    Texture * getTexture();
+    TextureLoader * getTexture();
     Joint getRootJoint();
     void deleteOpenGL(); // shouldn't need this
     void doAnimation(Animation * animation);

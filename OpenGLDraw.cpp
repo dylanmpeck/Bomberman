@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/10 15:23:40 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/11 19:01:49 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/12 17:44:43 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void OpenGLDraw::buildVertexBufferLayouts()
 
 void OpenGLDraw::clearScreen()
 {
-	GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+	GLCall(glClearColor(0.05f, 0.05f, 0.05f, 1.0f));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
@@ -88,7 +88,7 @@ std::vector<unsigned int> & OpenGLDraw::getBufferFormat(unsigned int slot)
     return (_offsets[slot]);
 }
 
-void OpenGLDraw::render(AnimatedModel * entity)
+/*void OpenGLDraw::render(AnimatedModel * entity)
 {
     std::vector<unsigned int> numOfAttribs(5, 1);
     entity->getModel()->bind(numOfAttribs);
@@ -110,4 +110,4 @@ void OpenGLDraw::render(AnimatedModel * entity)
     GLCall(glDrawElements(GL_TRIANGLES, entity->getModel()->getIndexCount(), GL_UNSIGNED_INT, 0));
     //glDrawArrays(GL_TRIANGLES, 0, entity->getModel()->getVerticesCount());
     //entity->getModel()->unbind(numOfAttribs);
-}
+}*/

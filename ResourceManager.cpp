@@ -6,7 +6,7 @@
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 19:59:37 by dpeck             #+#    #+#             */
-/*   Updated: 2019/07/11 18:40:48 by dpeck            ###   ########.fr       */
+/*   Updated: 2019/07/12 17:11:14 by dpeck            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@
 #include <fstream>
 #include <sstream>
 
-std::map<std::string, Texture> ResourceManager::_textures;
+std::map<std::string, TextureLoader> ResourceManager::_textures;
 std::map<std::string, Shader> ResourceManager::_shaders;
 std::map<std::string, Camera> ResourceManager::_cameras;
 //std::map<std::string, IndexBuffer> ResourceManager::_indexBuffers;
 //std::map<std::string, VertexArray> ResourceManager::_vertexArrays;
 
-Texture ResourceManager::_texture;
+TextureLoader ResourceManager::_texture;
 
 ResourceManager::ResourceManager() { return; }
 
@@ -74,22 +74,27 @@ ShaderProgramSource ResourceManager::parseShader(const std::string & filePath)
 	return {ss[0].str(), ss[1].str()};    
 }
 
-Texture & ResourceManager::loadTexture(const std::string & filePath, GLboolean alpha, GLboolean repeat, const std::string & name)
+TextureLoader & ResourceManager::loadTexture(const std::string & filePath, const std::string & name)
 {
-    _textures[name] = loadTextureFromFile(filePath, alpha, repeat);
+    _textures[name] = loadTextureFromFile(filePath);
     return (_textures[name]);
 }
 
-Texture & ResourceManager::loadTextureFromFile(const std::string & filePath, GLboolean alpha, GLboolean repeat)
+TextureLoader & ResourceManager::loadTexture(const std::string & filePath, const std::string & dirPath, const std::string & name)
+{
+	std::string filename = dirPath + '/' + filePath;
+    _textures[name] = loadTextureFromFile(filename);
+    return (_textures[name]);
+}
+
+TextureLoader & ResourceManager::loadTextureFromFile(const std::string & filePath)
 {
     unsigned char *buffer = nullptr;
-    int width, height, BPP;
+    int width, height, nbrComponents;
     //stbi_set_flip_vertically_on_load(1);
-    buffer = stbi_load(filePath.c_str(), &width, &height, &BPP, 4);
+    buffer = stbi_load(filePath.c_str(), &width, &height, &nbrComponents, 4);
 
-    GLint internalFormat = (alpha) ? GL_RGBA : GL_RGB;
-
-    _texture = Texture(width, height, buffer, internalFormat, repeat);
+    _texture = TextureLoader(width, height, buffer, nbrComponents);
 
     if (buffer != nullptr)
         stbi_image_free(buffer);
@@ -104,7 +109,7 @@ Shader & ResourceManager::getShader(const std::string & name)
     return (getShader("default"));
 }
 
-Texture & ResourceManager::getTexture(const std::string & name)
+TextureLoader & ResourceManager::getTexture(const std::string & name)
 {
 	if (_textures.find(name) != _textures.end())
 		return (_textures[name]);

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Texture.hpp                                        :+:      :+:    :+:   */
+/*   TextureLoader.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dpeck <dpeck@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,24 +10,24 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TEXTURE_HPP
-#define TEXTURE_HPP
+#ifndef TextureLoader_HPP
+#define TextureLoader_HPP
 
 #include "GLDebug.hpp"
 #include "glad/glad.h"
 
-class Texture {
+class TextureLoader {
 
 private:
     unsigned int _rendererID;
     int _width, _height, _BPP;
 
 public:
-    Texture();
-    Texture(int width, int height, unsigned char *image, GLint internalFormat, GLboolean repeat);
-    Texture(Texture const &);
-    Texture const & operator=(Texture const &);
-    ~Texture();
+    TextureLoader();
+    TextureLoader(int width, int height, unsigned char *image, int nbrComponents);
+    TextureLoader(TextureLoader const &);
+    TextureLoader const & operator=(TextureLoader const &);
+    ~TextureLoader();
 
     void bind(unsigned int slot = 0) const;
     void unbind() const;
@@ -37,6 +37,7 @@ public:
     int getWidth() const;
     int getHeight() const;
     int getBPP() const;
+    unsigned int getID();
 };
 
 #endif
